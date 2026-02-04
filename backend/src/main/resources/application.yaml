@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: walletiq
+
+  # profiles
+  profiles:
+    active: dev
+

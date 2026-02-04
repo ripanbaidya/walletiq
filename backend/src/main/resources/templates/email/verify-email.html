@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f6f7f9;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+
+        .email-box {
+            background-color: #ffffff;
+            padding: 32px 24px;
+            border-radius: 6px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2f69ec;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin: 0 0 16px;
+            color: #111827;
+        }
+
+        p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #374151;
+            margin: 0 0 16px;
+        }
+
+        .button-wrapper {
+            text-align: center;
+            margin: 24px 0;
+        }
+
+        .button {
+            display: inline-block;
+            background-color: #2f69ec;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 28px;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .link-text {
+            font-size: 13px;
+            color: #6b7280;
+            word-break: break-all;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .email-box {
+                padding: 24px 16px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="email-box">
+
+        <div class="logo">WalletIQ</div>
+
+        <h1 th:text="${title}">Verify your email</h1>
+
+        <p>
+            Hey <strong th:text="${name}">Ripan</strong>,
+        </p>
+
+        <p th:text="${message}">
+            Thanks for signing up! Please confirm your email address by clicking the button below.
+        </p>
+
+        <div class="button-wrapper">
+            <a th:href="${actionLink}" class="button">
+                Verify Email
+            </a>
+        </div>
+
+        <p class="link-text">
+            If the button doesn’t work, copy and paste this link into your browser:
+            <br>
+            <span th:text="${actionLink}">
+                https://example.com/verify?token=xyz
+            </span>
+        </p>
+
+        <p class="link-text">
+            This link expires in <span th:text="${expiryText}">1 hour</span>.
+        </p>
+
+        <p>
+            — The WalletIQ Team
+        </p>
+
+    </div>
+
+    <div class="footer">
+        © <span th:text="${year}">2026</span> WalletIQ
+    </div>
+</div>
+</body>
+</html>

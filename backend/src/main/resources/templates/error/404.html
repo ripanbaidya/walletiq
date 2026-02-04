@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Resource Not Found</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .terminal {
+            background-color: #2d2d2d;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 600px;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background-color: #3c3c3c;
+            padding: 10px 15px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .red { background-color: #ff5f56; }
+        .yellow { background-color: #ffbd2e; }
+        .green { background-color: #27c93f; }
+
+        .terminal-body {
+            padding: 25px;
+        }
+
+        .command {
+            color: #6a9955; /* Green */
+        }
+
+        .error-code {
+            color: #ce9178; /* Orange/Red */
+        }
+
+        .output {
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background-color: #d4d4d4;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+
+        a {
+            color: #569cd6;
+            text-decoration: none;
+            border-bottom: 1px dashed #569cd6;
+        }
+
+        a:hover {
+            border-bottom-style: solid;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="terminal">
+    <div class="terminal-header">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+    </div>
+    <div class="terminal-body">
+        <p>> GET /api/docs</p>
+        <p class="output">
+            <span class="error-code">Error 404:</span> Resource Not Found<br>
+            -----------------------<br>
+            Status: Failed<br>
+            Message: API documentation is disabled in production environments.<br>
+            <br>
+            > <a href="/">cd /home</a><span class="cursor"></span>
+        </p>
+    </div>
+</div>
+</body>
+</html>

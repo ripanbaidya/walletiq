@@ -1,0 +1,204 @@
+# * ---------------- Development  ---------------- *
+
+spring:
+  # If reading from env file
+  # config:
+  #  import: optional:file:.env
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:walletiq}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+    # HikariCP Connection Pool
+    hikari:
+      pool-name: WalletIQHikariPool
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000} # 30 seconds
+      idle-timeout: ${DB_IDLE_TIMEOUT:600000}   # 10 minutes
+      max-lifetime: ${DB_MAX_LIFETIME:1800000}  # 30 minutes
+      auto-commit: true
+      leak-detection-threshold: 60000 # 1 minute
+
+  # JPA/ Hibernate
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: ${JPA_SHOW_SQL:true}
+    open-in-view: false # Prevents accidental lazy loading
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: false
+        generate_statistics: false
+        jdbc:
+          batch_size: 20 # Ask driver to send upto 20 DML statements in a batch, Good for bulk insert/update
+          fetch_size: 50 # Ask driver to fetch x number of rows at a time, Good for pagination
+        order_inserts: true
+        order_updates: true
+
+  # Flyway
+  flyway:
+    enabled: ${FLYWAY_ENABLED:false}
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE:true} # true, to create a baseline on migrate
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
+
+  # Redis
+  data:
+    redis:
+      host: localhost
+      port: ${DOCKER_REDIS_PORT:6379}
+      database: 0
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          max-wait: 0
+      cache:
+        type: ${CACHE_TYPE:REDIS}
+        redis:
+          time-to-live: ${CACHE_TTL:3600}
+          use-key-prefix: true
+          key-prefix: "walletiq::"
+          cache-null-values: false
+          enable-statistics: true
+
+  # Jackson
+  jackson:
+    time-zone: Asia/Kolkata
+    date-format: yyyy-MM-dd HH:mm:ss
+
+# Server
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api/${API_VERSION:v1}
+    session:
+      timeout: 30m
+  compression:
+    enabled: true # Enable GZIP compression
+  error:
+    whitelabel:
+      enabled: false
+    # Do not expose internal exception messages
+    include-message: never
+    # Do not expose validation error details
+    # Use "on_param" only for debugging or internal APIs
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+  tomcat:
+    # Max time-server waits for a client connection (in ms)
+    connection-timeout: 20000 # 20s
+    threads:
+      # Maximum number of request-processing threads
+      # Tune based on CPU cores and expected concurrency
+      max: 200
+      # Minimum number of idle threads always kept alive
+      # Helps handle sudden traffic spikes
+      min-spare: 10
+
+# Logging (Check logback.xml for complete reference)
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.walletiq: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:DEBUG}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:TRACE}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:DEBUG}
+
+# OpenAPI/ Swagger doc
+springdoc:
+  api-docs:
+    path: /api-docs
+    enabled: ${SWAGGER_ENABLED:true}
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: ${SWAGGER_UI_ENABLED:true}
+    disable-swagger-default-url: true # Prevent loading default restore example
+    display-request-duration: true # Shows API execution time(ms) in the UI
+    operations-sorter: alpha # Sort APIs alphabetically
+    tags-sorter: alpha # Sort tags alphabetically
+    doc-expansion: none # Collapse all endpoints by default
+    filter: true # Enable search bar to filter endpoints
+    show-actuator: false # Actuator visibility
+    default-consumes-media-type: application/json
+    default-produces-media-type: application/json
+
+# Actuator (Health check)
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics,prometheus,loggers
+  endpoint:
+    health:
+      show-details: when_authorized # Show overall health status (UP / DOWN)
+      show-components: when_authorized # Show individual health contributors (DB, Redis, Kafka, etc.)
+
+# Application specific properties
+app:
+  name: ${APPLICATION_NAME:walletiq}
+  version: ${APPLICATION_VERSION:1.0.0}
+  logo: application-logo.png
+  build-number: ${APPLICATION_BUILD_NUMBER:1.0.0}
+  copyright: ${APPLICATION_COPYRIGHT:© 2026 walletiq. All rights reserved}
+  license:
+    name: ${APPLICATION_LICENSE_NAME:Apache License, Version 2.0}
+    url: ${APPLICATION_LICENSE_URL:https://www.apache.org/licenses/LICENSE-2.0.txt}
+  support:
+    email: ${SUPPORT_EMAIL:support@walletiq.com}
+    working-hours: "${Mon-Fri: 9 AM - 6 PM}"
+  socials:
+    github: ${SOCIAL_GITHUB:https://github.com/ripan-baidya/walletiq}
+    twitter: ${SOCIAL_TWITTER:https://twitter.com/walletiq}
+    instagram: ${SOCIAL_INSTAGRAM:https://instagram.com/walletiq}
+  developer:
+    name: ${DEVELOPER_NAME:Ripan Baidya}
+    email: ${DEVELOPER_EMAIL:official.ripanbaidya@gmail.com}
+
+
+  # API
+  api:
+    servers:
+      dev:
+        - http://localhost:${SERVER_PORT:8080}${SERVER_CONTEXT_PATH:/api/v1}
+      prod:
+        - https://api.walletiq.com
+
+  # CORS(Cross-Origin Resource Sharing)
+  cors:
+    enabled: ${CORS_ENABLED:true}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,PATCH,DELETE,OPTIONS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+    exposed-headers: ${CORS_EXPOSED_HEADERS:Authorization}
+    allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+    max-age: ${CORS_MAX_AGE:3600}
+
+# Security
+# Note: We are not using secret based JWT, instead we are using asymmetric encryption (RSA)
+security:
+  jwt:
+    issuer: ${JWT_ISSUER:walletiq}
+    header: Authorization
+    prefix: Bearer
+    access-token:
+      expiration: ${JWT_ACCESS_EXPIRATION:86400000}   # 24 hours
+    refresh-token:
+      expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
+    password:
+      encoder-strength: ${PASSWORD_ENCODER_STRENGTH:12}
+      max-login-attempts: 5
+      lockout-duration: 900000
+    # RSA
+    rsa:
+      algorithm: ${RSA_ALGORITHM:SHA256withRSA}
+      key-size: ${RSA_KEY_SIZE:2048}
+      private-key-path: ${RSA_PRIVATE_KEY_PATH:classpath:keys/local/private_key.pem}
+      public-key-path: ${RSA_PUBLIC_KEY_PATH:classpath:keys/local/public_key.pem}

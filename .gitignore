@@ -1,0 +1,40 @@
+# Os
+.DS_Store
+Thumb.db
+desktop.ini
+
+# IDE/ Editors
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+#*.code-workspace
+
+# Logs (global)
+logs/
+*.log
+
+# Environments
+.env
+.env.*
+!.env.example
+
+# Secrets/ Keys
+**/*credentials*
+*.pem
+*.key
+*.crt
+
+# Docker
+docker/*.env
+
+# Temporary Files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# System
+.pid

@@ -1,0 +1,35 @@
+# *********** Database Specific Configuration ***********
+name: walletiq
+services:
+
+  # postgreSql
+  postgres:
+    image: postgres:16-alpine
+    container_name: walletiq-postgres
+    restart: on-failure
+    environment:
+      - POSTGRES_DB=walletiq
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "${DOCKER_POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - walletiq-network
+
+  # redis
+  redis:
+    image: redis:alpine
+    container_name: walletiq-redis
+    restart: on-failure
+    ports:
+      - "${DOCKER_REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - walletiq-network
+
+volumes:
+  postgres-data:
+  redis-data:
